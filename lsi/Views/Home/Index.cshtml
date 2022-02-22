@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.15.4/bootstrap-table.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css">
+
+    <meta charset="utf-8">
+
+    <script>
+        function ajaxRequest(params) {
+            $.ajax({
+                type: 'GET',
+                dataType: "jsonp",
+                contentType: "application/json",
+                url: 'https://localhost:44354/api/Export?DateFrom=null&DateTo=null&Place=',
+                success: function (data) {
+
+                    $('#exportsData').bootstrapTable('load', data )
+                }, error: function (er) {
+                    params.error(er);
+                }
+            });
+        }
+
+        function reloadData() {
+            var place = $('#sel1').val();
+            var fromDate = $('#from').val();
+            var toDate = $('#to').val();
+
+            $.ajax({
+                type: 'GET',
+                dataType: "jsonp",
+                contentType: "application/json",
+                url: 'https://localhost:44354/api/Export?DateFrom=' + fromDate + '&DateTo=' + toDate + '&Place=' + place,
+                success: function (data) {
+                    $('#exportsData').bootstrapTable('load', data )
+                }, error: function (er) {
+
+                }
+            });
+
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <div class="row">
+
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="sel1">Lokal:</label>
+                <select class="form-control" id="sel1">
+                    <option></option>
+                    <option>Place1</option>
+                    <option>Place2</option>
+                    <option>Place3</option>
+                    <option>Place4</option>
+                </select>
+                <div>
+                    <input type="date" id="from" value="2018-07-22" name="trip-from">
+                </div>
+                <div>
+                    <input type="date" id="to" value="2022-07-22" name="trip-to">
+                </div>
+            </div>
+
+            <button type="button" onclick="reloadData()" class="btn btn-default">Submit</button>
+
+        </div>
+        <div class="col-sm-8">
+            <table class="table table-bordered" id="exportsData"
+           data-ajax="ajaxRequest"
+           data-id-field="id"
+           data-side-pagination="server"
+           data-pagination="true" data-toggle="table">
+            <thead>
+                <tr>
+                    <th data-field="exportName">
+                        Nazwa
+                    </th>
+                    <th data-field="exportData">
+                        Data
+                    </th>
+                    <th>
+                        Godzina
+                    </th>
+                    <th data-field="userName">
+                        Użytkownik
+                    </th>
+                    <th data-field="place">
+                        Lokal
+                    </th>
+                </tr>
+            </thead>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
